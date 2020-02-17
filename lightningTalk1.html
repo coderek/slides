@@ -1,0 +1,284 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Micro and Macro tasks</title>
+
+		<link rel="stylesheet" href="css/reset.css">
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/black.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/monokai.css">
+
+    <style>
+    .flex {
+      display: flex;
+    }
+    .macro {
+      color: cadetblue !important;
+    }
+    .micro {
+      color: pink !important;
+    }
+    </style>
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section>
+          <h2>
+            <span class="macro">Macrotask</span> and <span class="micro">Microtask</span> in JavaScript
+          </h2>
+          <div style="text-align: right">
+          by Derek Zeng
+          </div>
+        </section>
+        <section>
+          <section>
+            <h2 class="macro">
+              Macrotask (Task)
+            </h2>
+            <p>
+              Any <u>async</u> event handler or callback
+            </p>
+            <ul class="fragment">
+              <li>set a timeout</li>
+              <li>load a script</li>
+              <li>move a mouse </li>
+            </ul>
+          </section>
+          <section>
+            <h3>
+              <span class="macro">Macrotask</span> queue
+            </h3>
+            <p>
+            A queue that holds callback functions of Macrotasks
+            </p>
+            <div class="flex">
+            <pre>
+    +   <------+
+    |          |
+    |          |
+    |          |
+    |          |
+    |   Event  |
+    |   Loop   |
+    |          |
+    |          |
+    |          |
+    |          |
+    +----->    +
+            </pre>
+            <div>
+            <pre>
+            Macro Task Queue
+          +---------------+-----------------+---------------+
+  <=====  |  onMouseMove  |  onLoadScript   |  onTimeout    ...
+          +---------------+-----------------+---------------+
+            </pre>
+            <pre>
+              Call stack
+             +---------------+
+             |               |
+             +---------------+
+ =====>      | showDropdown  |  ^
+             +---------------+  |
+             | * onMouseMove |  |
+             +---------------+  |
+            </pre>
+            </div>
+            </div>
+          </section>
+          <section>
+            <h3 class="micro">Microtask</h3>
+            <p>
+            A microtask is a short function which is executed after the <span class="macro">macrotask</span> which created it exits and only if the stack is empty, but before returning control to the event loop. 
+            </p>
+          </section>
+          <section>
+            <pre>
+  Macro Task Queue
+  +-------------------------------------+---------------+---
+  |                Microtasks           |           
+  |  onMouseMove   +-------+-------+--  |  onLoadScript ...  
+  |                | MT1   |  MT2  ...  |
+  |                +-------+-------+--  |
+  +---------------+-----------------+-------------------+---
+            </pre>
+            <pre>
+              Call stack
+             +---------------+
+             |   Empty       |
+             +---------------+
+            </pre>
+          </section>
+        </section>
+        <section>
+          <h3>Promise creates microtasks</h3>
+					<pre><code class="hljs" data-line-numbers>console.log('script start');
+
+setTimeout(function() {
+  console.log('setTimeout');
+}, 0);
+
+Promise.resolve().then(function() {
+  console.log('promise1');
+}).then(function() {
+  console.log('promise2');
+});
+
+console.log('script end');
+            </code>
+          </pre>
+        </section>
+        <section>
+          <pre>
+            <code>
+              queueMicrotask(work)
+            </code>
+          </pre>
+        </section>
+        <section>
+          <h3>Use case 1: batch update</h3>
+					<pre><code class="hljs" data-trim data-line-numbers>
+const messageQueue = [];
+
+let sendMessage = message => {
+  messageQueue.push(message);
+
+  if (messageQueue.length === 1) {
+    queueMicrotask(() => {
+      const json = JSON.stringify(messageQueue);
+      messageQueue.length = 0;
+      fetch("url-of-receiver", json);
+    });
+  }
+};
+					</code></pre>
+        </section>
+        <section>
+          <section>
+          <h5>Use case 2: Ensuring ordering on conditional use of promises </h5>
+          <div>
+          <pre>
+          <code class="hljs" data-trim data-line-numbers>
+customElement.prototype.getData = url => {
+  if (this.cache[url]) {
+    this.data = this.cache[url];
+    this.dispatchEvent(new Event("load"));
+  } else {
+    fetch(url).then(result => result.arrayBuffer())
+      .then(data => {
+        this.cache[url] = data;
+        this.data = data;
+        this.dispatchEvent(new Event("load"));
+      });
+  }
+};
+element.addEventListener("load", 
+  () => console.log("Loaded data"));
+console.log("Fetching data...");
+element.getData();
+console.log("Data fetched");
+          </code>
+          </pre>
+      </div>
+</section>
+<section>
+          <table>
+            <thead>
+              <tr>
+                <th>Data isn't cached</th>
+                <th>Data is cached</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <pre>
+                  <code class="hljs" data-line-numbers>"Fetching data"
+"Data fetched"
+"Loaded data"
+                  </code>
+                  </pre>
+                </td>
+                <td>
+                  <pre>
+                  <code class="hljs" data-line-numbers>"Fetching data"
+"Loaded data"
+"Data fetched"
+                  </code>
+                  </pre>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+</section>
+<section>
+  <pre>
+  <code class="hljs" data-line-numbers>customElement.prototype.getData = url => {
+  if (this.cache[url]) {
+    queueMicrotask(() => {
+      this.data = this.cache[url];
+      this.dispatchEvent(new Event("load"));
+    });
+  } else {
+    fetch(url).then(result => result.arrayBuffer()).then(data => {
+      this.cache[url] = data;
+      this.data = data;
+      this.dispatchEvent(new Event("load"));
+    });
+  }
+};
+  </code>
+  </pre>
+</section>
+        </section>
+        <section>
+            <h3>Summary</h3>
+          <div data-markdown>
+            <script type="text/template">
+              > The importance of microtasks comes in its ability to perform tasks asynchronously but in a specific order. 
+
+              > Microtasks are especially useful when you need to perform final cleanup or other just-before-rendering tasks.
+            </script>
+          </div>
+        </section>
+        <section>
+          <h3>Thanks</h3>
+          <h4>Questions?</h4>
+        </section>
+			</div>
+		</div>
+
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info about config & dependencies:
+			// - https://github.com/hakimel/reveal.js#configuration
+			// - https://github.com/hakimel/reveal.js#dependencies
+			Reveal.initialize({
+				hash: true,
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/highlight/highlight.js' },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+		</script>
+	</body>
+</html>
+
