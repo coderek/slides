@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>reveal.js – The HTML Presentation Framework</title>
+
+		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+		<meta name="author" content="Hakim El Hattab">
+
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<link rel="stylesheet" href="css/reset.css">
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/solarized.css" id="theme">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+    <style>
+    section .hl {  
+      text-transform: uppercase;
+      text-decoration: underline;
+    }
+    </style>
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+					<h1>Snowpack ❄️</h1>
+					<h4>A fast build tool for JavaScript developers</h4>
+				</section>
+
+        <section>
+
+          <section>
+            <h1>Why</h1>
+            <aside class="notes">
+              Before I answer this question, let's take a look at how web project is built today.
+            </aside>
+          </section>
+
+          <section>
+            <h3>
+              Steps for build system to build a frontend app
+            </h3>
+            <ol>
+              <li class='fragment'>Read a source file</li>
+              <li class='fragment'>Transpile it into browser readable format (e.g. ES5)</li>
+              <li class='fragment'>Read dependencies and repeat step 2</li>
+              <li class='fragment'>Concatenate all transpiled files into <span class='hl'>one big</span> file</li>
+              <li class='fragment'>Send the <span class="hl">one big</span> file to the browser</li>
+            </ol>
+            <br>
+            <br>
+            
+            <h3 class='fragment'>SLOW   ...... 🐌</h3>
+          </section>
+
+          <section>
+            <h3 class='fragment'>
+              For production 👌. 
+            </h3>
+            <h3 class='fragment'>
+              But for development....🤨 
+            </h3>
+          </section>
+
+          <section>
+            <h3>
+              Optimizations for development 
+            </h3>
+            <ol>
+              <li class='fragment'>Skip obfuscation</li>
+              <li class='fragment'>Build <strong>node_module </strong>files separately as DLL</li>
+              <li class='fragment'>Hot Module Replacement</li>
+            </ol>
+
+            <br>
+            <br>
+            
+            <h4 class='fragment'>But still ... slow😔</h4>
+          </section>
+
+          <section>
+            <h1>Snowpack  ❄️</h1>
+              is here to rescue
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h1>How</h1>
+          </section>
+          <section>
+            <h3>JavaScript Module</h3>
+            <pre><code data-line-numbers>&lt;html&gt;
+  &lt;body&gt;
+    &lt;script type=&quot;module&quot; src=&quot;/React.js&quot;&gt;&lt;/script&gt;
+    &lt;script type=&quot;module&quot; src=&quot;/app.js&quot;&gt;&lt;/script&gt;
+    &lt;script type='module'&gt;
+        import React from 'react';
+        console.log(React);
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+          
+            <aside class="notes">
+              Modules loading are deferred by default
+            </aside>
+          </section>
+
+          <section>
+            <p>
+              It loads ES module directly from browser. 
+            </p>
+            <p class='fragment'>
+              No bundling needed.
+            </p>
+            <p class='fragment'>
+              No re-compilation needed.
+            </p>
+            <p class='fragment'>
+              Faster! 😁
+            </p>
+          </section>
+        </section>
+
+        <section>
+          <h1>Demo</h1>
+            <aside class="notes">
+              <small>
+                Comparing to webpack recompilation, it can be a bit slow for the first render.
+              </small>
+            </aside>
+        </section>
+
+        <section>
+          <h4>Thoughts</h4>
+            <aside class="notes">
+              <small>
+                <p>
+                Snowpack uses <u>rollup </u>as underlying tool for transpiling and bundling.
+                It still builds optimized bundle for production. 
+
+                </p>
+                <p>
+                But it can let you choose to use webpack for bundling production build. So still compatible to our existing tools.
+                </p>
+                <p>
+                Downside is the learning cost for rollup system. There are also rough edges. I've tried to port Dash to snowpack, but failed.
+                </p>
+              </small>
+            </aside>
+            <p class='fragment'>
+            Future of frontend development
+            </P>
+            <p class='fragment'>
+            <u>JS modules</u> + <u>HTTP2</u> can eliminate the need for a bundler. 
+            </p>
+
+        </section>
+
+        <section>
+          <h1>Thank you!</h1>
+          <p class='fragment'>
+            References
+          </p>
+          <ul class='fragment'>
+            <li><a href="https://jakearchibald.com/2017/es-modules-in-browsers/">ES module in browser</a></li>
+            <li><a href="https://www.snowpack.dev/">Snowpack</a></li>
+            <li><a href="https://webpack.js.org/guides/hot-module-replacement/">hot-module-replacement</a></li>
+            <li><a href="https://github.com/gaearon/react-hot-loader">react-hot-loader</a></li>
+          </ul>
+        </section>
+			</div>
+		</div>
+
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+			// More info https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				center: true,
+				hash: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// More info https://github.com/hakimel/reveal.js#dependencies
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js' },
+					{ src: 'plugin/search/search.js', async: true },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
+
