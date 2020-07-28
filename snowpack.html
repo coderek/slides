@@ -4,7 +4,7 @@
 	<head>
 		<meta charset="utf-8">
 
-		<title>reveal.js – The HTML Presentation Framework</title>
+		<title>Snowpack Presentation</title>
 
 		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
 		<meta name="author" content="Hakim El Hattab">
@@ -16,7 +16,7 @@
 
 		<link rel="stylesheet" href="css/reset.css">
 		<link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/solarized.css" id="theme">
+		<link rel="stylesheet" href="css/theme/sky.css" id="theme">
 
 		<!-- Theme used for syntax highlighting of code -->
 		<link rel="stylesheet" href="lib/css/zenburn.css">
@@ -63,13 +63,13 @@
 
           <section>
             <h3>
-              Steps for build system to build a frontend app
+              Build System
             </h3>
             <ol>
               <li class='fragment'>Read a source file</li>
               <li class='fragment'>Transpile it into browser readable format (e.g. ES5)</li>
               <li class='fragment'>Read dependencies and repeat step 2</li>
-              <li class='fragment'>Concatenate all transpiled files into <span class='hl'>one big</span> file</li>
+              <li class='fragment'>Bundle all transpiled files into <span class='hl'>one big</span> file</li>
               <li class='fragment'>Send the <span class="hl">one big</span> file to the browser</li>
             </ol>
             <br>
@@ -83,13 +83,12 @@
               For production 👌. 
             </h3>
             <h3 class='fragment'>
-              But for development....🤨 
-            </h3>
+              But for development....<span class='fragment'>🤨</span>            </h3>
           </section>
 
           <section>
             <h3>
-              Optimizations for development 
+              Optimizations
             </h3>
             <ol>
               <li class='fragment'>Skip obfuscation</li>
@@ -99,6 +98,9 @@
 
             <br>
             <br>
+            <aside class='notes'>
+              But for large size application, still slow
+            </aside>
             
             <h4 class='fragment'>But still ... slow😔</h4>
           </section>
@@ -106,6 +108,9 @@
           <section>
             <h1>Snowpack  ❄️</h1>
               is here to rescue
+            <aside class='notes'>
+              Snowpack is a replacement of webpack. More efficient by leveraging on the latest web technologies.
+            </aside>
           </section>
         </section>
 
@@ -181,7 +186,7 @@
             Future of frontend development
             </P>
             <p class='fragment'>
-            <u>JS modules</u> + <u>HTTP2</u> can eliminate the need for a bundler. 
+            <u>JS modules</u> + <u>HTTP2</u>
             </p>
 
         </section>
@@ -191,12 +196,25 @@
           <p class='fragment'>
             References
           </p>
+
+          <small>
           <ul class='fragment'>
             <li><a href="https://jakearchibald.com/2017/es-modules-in-browsers/">ES module in browser</a></li>
             <li><a href="https://www.snowpack.dev/">Snowpack</a></li>
             <li><a href="https://webpack.js.org/guides/hot-module-replacement/">hot-module-replacement</a></li>
             <li><a href="https://github.com/gaearon/react-hot-loader">react-hot-loader</a></li>
           </ul>
+          </small>
+  
+          <br>
+          <br>
+          
+          <div class='fragment'>
+          A little survey
+          <br>
+          
+            <a href="https://forms.gle/xtSpgjexGDMcj2Y17">https://forms.gle/xtSpgjexGDMcj2Y17</a>
+          </div>
         </section>
 			</div>
 		</div>
